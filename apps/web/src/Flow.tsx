@@ -3,6 +3,7 @@ import {
   Link,
   Navigate,
   useNavigate,
+  useLocation,
   useParams,
   useSearchParams,
 } from "react-router-dom";
@@ -89,7 +90,7 @@ export function StudentToday() {
               <span>한 걸음 더.</span>
             </h2>
             <p>
-              강의별 오늘의 이론을 풀고,
+              오늘의 이론이나 실습을 풀고,
               <br />
               헷갈렸던 개념을 다시 연결해 보세요.
             </p>
@@ -312,10 +313,10 @@ export function QuizCatalog() {
                 <article className="quiz-mode-card quiz-practice-card">
                   <div className="quiz-mode-top"><span className="student-eyebrow">02 / PRACTICE</span><span className="quiz-mode-tag">실습</span></div>
                   <h4>직접 풀며 연결해요.</h4>
-                  <p className="quiz-mode-description">실행 결과 예측 · 코드 빈칸 · 직접 구현<br />세 가지 방식으로 개념을 적용하는 학습이에요.</p>
+                  <p className="quiz-mode-description">시작 코드에서 핵심 로직을 직접 구현해요.<br />실행 흐름을 확인하며 개념을 적용해 보세요.</p>
                   <div className="quiz-language-list" aria-label="수업 언어"><span>{({ python: "Python", java: "Java", c: "C" } as { [key: string]: string })[r.course.teaching_language.toLowerCase()] || r.course.teaching_language}</span></div>
                   <div className="quiz-mode-footer">
-                    <p>실습 3문제 · 수업에서 배운 내용을 적용해 보세요.</p>
+                    <p>직접 구현 2문제 · 수업에서 배운 내용을 적용해 보세요.</p>
                     <Link className="ln-cta" to={`/classrooms/${r.section.id}/practice`}>실습 풀기 ↗</Link>
                   </div>
                 </article>
@@ -324,7 +325,7 @@ export function QuizCatalog() {
           );
         })}
       </div>
-      <div className="quiz-section-heading quiz-history-heading"><div><span className="student-eyebrow">YOUR LEARNING TRAIL</span><h2>이론 제출·복습 기록</h2></div></div>
+      <div className="quiz-section-heading quiz-history-heading"><div><span className="student-eyebrow">YOUR LEARNING TRAIL</span><h2>이론 학습·복습 기록</h2></div></div>
       {!history.data && !history.error && <Notice>학습 기록을 불러오는 중이에요…</Notice>}
       {history.data && records.length === 0 && <div className="quiz-empty"><strong>첫 번째 학습 기록을 남겨 보세요.</strong><p>퀴즈를 제출하면 결과와 해설을 여기에서 다시 확인할 수 있어요.</p></div>}
       {records.map((s) => (
@@ -334,9 +335,9 @@ export function QuizCatalog() {
             {active.find((r) => r.section.id === s.section_id)?.course.title}
           </span>
           <span>
-            {s.submitted}/{s.total} 제출
+            {s.submitted === s.total && s.total > 0 ? "제출 완료" : "미완료"} · {s.submitted}/{s.total}문항 제출
           </span>
-          <Link to={`/quiz/results/${s.id}`}>결과·해설 보기</Link>
+          <Link to={`/quiz/results/${s.id}`}>{s.submitted > 0 ? "제출 답안·해설 보기" : "학습 내역 보기"}</Link>
         </div>
       ))}
     </section>
@@ -585,6 +586,12 @@ export function QuizResults() {
   const [actionError, setActionError] = useState("");
   const { learningId = "" } = useParams();
   const r = useLoad<Daily>(`/learning-sessions/${learningId}`);
+  const { hash } = useLocation();
+  const hasResult = !!r.data;
+  useEffect(() => {
+    if (!hasResult || !hash.startsWith("#question-")) return;
+    document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+  }, [hash, hasResult]);
   useEffect(() => {
     if (!r.data?.items.some((q) => q.attempt?.status === "pending")) return;
     const timer = setTimeout(r.reload, 3000);
@@ -615,7 +622,7 @@ export function QuizResults() {
           </div>
           <h2 className="result-section-title">문항별 답안과 해설</h2>
           {r.data.items.map((q, i) => (
-            <article className={`panel result-question ${q.attempt?.status === "graded" ? (q.attempt.correct ? "result-correct" : "result-review") : "result-pending"}`} key={q.id}>
+            <article id={`question-${q.id}`} className={`panel result-question ${q.attempt?.status === "graded" ? (q.attempt.correct ? "result-correct" : "result-review") : "result-pending"}`} key={q.id}>
               <div className="result-question-meta"><small>
                 {i + 1}번 · {q.kind === "essay" ? "서술형" : "객관식"}
               </small><span className={`result-status ${q.attempt?.status === "graded" ? (q.attempt.correct ? "is-correct" : "is-review") : "is-pending"}`}>{q.attempt?.status === "graded" ? (q.attempt.correct ? "정답" : "복습해 보세요") : q.attempt?.status === "pending" ? "채점 중" : q.attempt ? "검토 보류" : "미제출"}</span></div>
@@ -756,14 +763,14 @@ export function CourseWorkspace({ mode }: { mode: "chat" | "progress" }) {
                 {domain === "theory" ? <>
 
                 <MyLearning key={room.section.id} sectionId={room.section.id} />
-                <h3 className="progress-history-title">최근 제출 기록</h3>
+                <h3 className="progress-history-title">최근 학습 기록</h3>
                 <ErrorNotice text={history.error} />
                 {history.data?.items
                   .filter((s) => s.section_id === room.section.id)
                   .map((s) => (
                     <div className="progress-history-row" key={s.id}>
-                      <span>{s.day}</span><span>{s.submitted}/{s.total}문항 제출</span>{" "}
-                      <Link to={`/quiz/results/${s.id}`}>결과·해설 ↗</Link>
+                      <span>{s.day}</span><span>{s.submitted === s.total && s.total > 0 ? "제출 완료" : "미완료"} · {s.submitted}/{s.total}문항 제출</span>{" "}
+                      <Link to={`/quiz/results/${s.id}`}>{s.submitted > 0 ? "제출 답안·해설 ↗" : "학습 내역 ↗"}</Link>
                     </div>
                   ))}
                 {history.data && !history.data.items.some(s => s.section_id === room.section.id) && <Notice>아직 제출 기록이 없어요. 첫 학습부터 시작해 보세요.</Notice>}
@@ -797,7 +804,7 @@ export function Profile() {
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [error, setError] = useState("");
-  const saveProfile = async (payload: { major?: string; student_number?: string; avatar?: string | null }) => {
+  const saveProfile = async (payload: { major?: string; student_number?: string; email?: string; avatar?: string | null }) => {
     setBusy(true); setError(""); setFeedback("");
     try {
       await api("/me/profile", { method: "PATCH", body: JSON.stringify(payload) });
@@ -836,9 +843,10 @@ export function Profile() {
           <section className="profile-card">
             <span className="student-eyebrow">ACCOUNT DETAILS</span>
             <div className="profile-card-heading"><h2>계정 정보</h2><button className={editing ? "action-secondary" : "primary"} disabled={busy} onClick={() => setEditing(!editing)}>{editing ? "취소" : "정보 수정"}</button></div>
-            <dl><div><dt>이름</dt><dd>{user?.display_name}</dd></div><div><dt>아이디</dt><dd>{user?.login_id}</dd></div><div><dt>계정 유형</dt><dd>{role}</dd></div><div><dt>전공</dt><dd>{user?.major || "미등록"}</dd></div><div><dt>학번</dt><dd>{user?.student_number || "미등록"}</dd></div></dl>
-            {editing && <form className="profile-edit-form" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); void saveProfile({ major: String(f.get("major") || ""), student_number: String(f.get("student_number") || "") }); }}>
+            <dl><div><dt>이름</dt><dd>{user?.display_name}</dd></div><div><dt>아이디</dt><dd>{user?.login_id}</dd></div><div><dt>이메일</dt><dd>{user?.email || "미등록"}</dd></div><div><dt>계정 유형</dt><dd>{role}</dd></div><div><dt>전공</dt><dd>{user?.major || "미등록"}</dd></div><div><dt>학번</dt><dd>{user?.student_number || "미등록"}</dd></div></dl>
+            {editing && <form className="profile-edit-form" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); void saveProfile({ email: String(f.get("email") || ""), major: String(f.get("major") || ""), student_number: String(f.get("student_number") || "") }); }}>
               <label>전공<input name="major" defaultValue={user?.major || ""} maxLength={100} placeholder="예: 컴퓨터공학과" disabled={busy} /></label>
+              <label>이메일<input name="email" type="email" defaultValue={user?.email || ""} maxLength={254} autoComplete="email" required disabled={busy} /></label>
               <label>학번<input name="student_number" defaultValue={user?.student_number || ""} maxLength={40} placeholder="학번을 입력해 주세요" disabled={busy} /></label>
               <button className="ln-cta" disabled={busy}>{busy ? "저장 중…" : "변경 사항 저장"}</button>
             </form>}

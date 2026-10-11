@@ -578,6 +578,8 @@ def my_learning(section_id: str, session: Db, actor: Actor):
                 and sum(bool(a.correct) for a in rows) >= 4
                 and len(success_days) >= 2,
                 "review_due": review.due_on if review else None,
+                "review_session_id": rows[0].learning_session_id if rows else None,
+                "review_question_id": rows[0].question_id if rows else None,
             }
         )
     return {"items": items}

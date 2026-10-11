@@ -28,6 +28,7 @@ class User(Identity, Base):
     display_name: Mapped[str] = mapped_column(String(100))
     major: Mapped[str | None] = mapped_column(String(100))
     student_number: Mapped[str | None] = mapped_column(String(40))
+    email: Mapped[str | None] = mapped_column(String(254))
     avatar: Mapped[str | None] = mapped_column(Text)
     password_hash: Mapped[str] = mapped_column(Text)
     role: Mapped[str] = mapped_column(String(20), default="student")

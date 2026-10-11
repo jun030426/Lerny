@@ -257,6 +257,14 @@ export function Landing() {
           <span className="ln-stage-caption">ONE CLASS. MANY CONNECTIONS.</span>
         </div>
       </div>
+      <section className="ln-learning-experiences" aria-labelledby="learning-experiences-title">
+        <span className="ln-kicker">SEE IT. UNDERSTAND IT. BUILD IT.</span>
+        <h2 id="learning-experiences-title">보고 이해하고,<br />직접 연결하는 배움.</h2>
+        <div className="ln-experience-grid">
+          <article><span className="ln-experience-number">01 / AI CLASS</span><h3>개념 하나, 짧은 강의 하나.</h3><p>AI 강사가 칠판의 도표와 예시로 수업의 핵심을 설명하는 개념별 강의를 준비하고 있어요.</p><small>영상 콘텐츠 준비 중</small></article>
+          <article><span className="ln-experience-number">02 / CODE &amp; VISUAL</span><h3>내 코드가 움직이는 순간.</h3><p>핵심 로직을 직접 작성하고, 실행 흐름을 시각화로 확인하는 실습을 준비하고 있어요.</p><small>격리 실행·시각화 연결 예정</small></article>
+        </div>
+      </section>
       <section className="ln-destinations">
         <div className="ln-section-heading">
           <span className="ln-kicker">FIND YOUR NEXT STEP</span>

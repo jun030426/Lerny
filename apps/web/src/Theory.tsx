@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api, post, type Concept } from "./api";
 import { ErrorNotice, Form, Notice, field, useLoad } from "./components";
 
@@ -168,6 +169,8 @@ export function MyLearning({ sectionId }: { sectionId: string }) {
       correct_recent: number;
       mastered: boolean;
       review_due: string | null;
+      review_session_id: string | null;
+      review_question_id: string | null;
     }[];
   }>(`/sections/${sectionId}/my-learning`);
   return (
@@ -190,6 +193,7 @@ export function MyLearning({ sectionId }: { sectionId: string }) {
             독립 답안 {c.valid_recent}건 · 정답 {c.correct_recent}건
           </span>
           {c.review_due && <small>복습 권장 {c.review_due}</small>}
+          {c.review_session_id && <Link className="concept-review-link" to={`/quiz/results/${c.review_session_id}#question-${c.review_question_id}`}>답안·해설 복습 ↗</Link>}
         </div>
       ))}
     </>
@@ -338,10 +342,10 @@ export function Analytics({ sectionId }: { sectionId: string }) {
               <thead>
                 <tr>
                   <th>학생</th>
-                  <th>참여</th>
-                  <th>유효 답안</th>
+                  <th>제출 답안 (건)</th>
+                  <th>정답률 집계 (건)</th>
                   <th>정답률</th>
-                  <th>대기·보류</th>
+                  <th>대기·보류 (건)</th>
                 </tr>
               </thead>
               <tbody>

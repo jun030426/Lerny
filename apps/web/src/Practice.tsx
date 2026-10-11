@@ -38,7 +38,7 @@ export function PracticeWorkspace() {
     <div className="practice-layout">
       <section className="practice-problem">
         <div className="practice-panel-label"><span className="student-eyebrow">PROBLEM</span><span>문제 설명</span></div>
-        <div className="practice-types" aria-label="실습 문제 유형"><span>01 예측</span><span>02 빈칸</span><span>03 구현</span></div>
+        <div className="practice-types" aria-label="일일 실습 구성"><span>직접 구현</span><span>하루 2문제</span></div>
         <h2>개념을 코드로 연결해요.</h2><p className="practice-problem-description">문제를 읽고 수업 언어로 풀어 보세요. 실행 결과를 확인한 뒤 최종 답안을 제출할 수 있어요.</p>
         <details className="practice-problem-details"><summary>문제 조건과 입출력 예제</summary><div className="practice-problem-empty"><span aria-hidden="true">&lt;/&gt;</span><strong>배정된 문제를 기다리고 있어요.</strong><p>문제가 연결되면 조건과 입출력 예제가 이곳에 표시돼요.</p></div></details>
         <details className="practice-guide"><summary>실습은 이렇게 진행해요</summary><ol><li>문제의 조건과 예제를 확인해요.</li><li>수업 언어로 답안을 작성해요.</li><li>실행으로 확인한 뒤 최종 제출해요.</li></ol></details>
@@ -78,7 +78,7 @@ export function PracticeResults() {
         <p className="practice-result-policy">실행과 최종 제출은 구분돼요. 최종 제출한 답안의 검증 결과를 이곳에서 확인해요.</p>
       </section>
       <div className="practice-result-grid">
-        <section className="practice-result-card"><div className="practice-result-card-heading"><span className="student-eyebrow">SUBMISSIONS</span><h2>문항별 제출 결과</h2></div><div className="practice-result-empty"><span aria-hidden="true">&lt;/&gt;</span><h3>아직 제출한 실습이 없어요.</h3><p>예측·빈칸·구현 문제의 제출 상태와<br />검증 결과가 차례로 쌓이는 공간이에요.</p><Link className="ln-cta" to={`/classrooms/${sectionId}/practice`}>실습 풀이로 이동 ↗</Link></div></section>
+        <section className="practice-result-card"><div className="practice-result-card-heading"><span className="student-eyebrow">SUBMISSIONS</span><h2>문항별 제출 결과</h2></div><div className="practice-result-empty"><span aria-hidden="true">&lt;/&gt;</span><h3>아직 제출한 실습이 없어요.</h3><p>직접 구현 문제의 제출 상태와<br />검증 결과가 차례로 쌓이는 공간이에요.</p><Link className="ln-cta" to={`/classrooms/${sectionId}/practice`}>실습 풀이로 이동 ↗</Link></div></section>
         <section className="practice-result-card"><div className="practice-output-tabs" aria-label="제출 상세 보기">{["테스트 결과", "제출 코드", "해설"].map(t => <button key={t} aria-pressed={tab === t} onClick={() => setTab(t)}>{t}</button>)}</div><div className="practice-result-empty"><h3>{tab === "테스트 결과" ? "테스트로 풀이를 확인해요." : tab === "제출 코드" ? "제출한 코드를 다시 읽어 보세요." : "풀이의 이유를 연결해 보세요."}</h3><p>{tab === "테스트 결과" ? "제출 기록을 선택하면 공개 테스트의 입력·기대 출력·실제 출력을 확인할 수 있어요." : tab === "제출 코드" ? "언어와 함께 최종 제출한 코드가 표시되는 공간이에요." : "문항별 해설과 관련 개념을 확인하는 공간이에요."}</p><span className="practice-result-empty-note">실습 제출 기능 연결 전 · 현재 제출 기록 없음</span></div></section>
       </div>
       <div className="practice-result-bottom"><p>실행 결과를 이해하는 것도 배움의 한 과정이에요.</p><Link to={`/ai?section=${sectionId}`}>이 강의에 질문하기 ↗</Link><Link to={`/attendance?section=${sectionId}&domain=practice`}>학습 기록 보기 ↗</Link></div>

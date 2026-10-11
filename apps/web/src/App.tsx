@@ -32,6 +32,7 @@ import { api, post, type Classroom } from "./api";
 import { PracticeWorkspace, PracticeResults } from "./Practice";
 import { StudentExamPrep } from "./ExamPrep";
 import { Landing } from "./Landing";
+import { InstructorClass } from "./Instructor";
 
 function useClassroomContext(userId?: string) {
   const location = useLocation();
@@ -44,7 +45,7 @@ function useClassroomContext(userId?: string) {
     const resultId = path.match(/^\/quiz\/results\/([^/]+)$/)?.[1];
     const sectionId =
       path.match(/^\/(?:classrooms|quiz)\/([^/]+)$/)?.[1] ||
-      path.match(/^\/classrooms\/([^/]+)\/practice(?:\/results)?$/)?.[1] ||
+      path.match(/^\/classrooms\/([^/]+)\/(?:practice(?:\/results)?|lectures)$/)?.[1] ||
       (["/ai", "/quiz", "/attendance"].includes(path)
         ? new URLSearchParams(location.search).get("section")
         : null);
@@ -90,6 +91,7 @@ function Shell() {
       pathname === "/attendance" ||
       pathname === "/exam-prep" ||
       pathname === "/mypage" ||
+      /^\/classrooms\/[^/]+\/lectures$/.test(pathname) ||
       /^\/classrooms\/[^/]+\/practice(?:\/results)?$/.test(pathname) ||
       pathname === "/quiz" ||
       /^\/quiz\/(?:results\/)?[^/]+$/.test(pathname) ||
@@ -127,6 +129,7 @@ function Shell() {
                 ? classroom
                   ? [
                       [`/classrooms/${classroom.section.id}`, "강의실"],
+                      [`/classrooms/${classroom.section.id}/lectures`, "AI 강의"],
                       [`/ai?section=${classroom.section.id}`, "AI 질문"],
                       [`/quiz?section=${classroom.section.id}`, "퀴즈"],
                       [
@@ -204,6 +207,7 @@ function Shell() {
         }
       >
         <Routes>
+          <Route path="/classrooms/:sectionId/lectures" element={<Guard><StudentOnly><InstructorClass /></StudentOnly></Guard>} />
           <Route path="/classrooms/:sectionId/practice/results" element={<Guard><StudentOnly><PracticeResults /></StudentOnly></Guard>} />
           <Route path="/classrooms/:sectionId/practice" element={<Guard><StudentOnly><PracticeWorkspace /></StudentOnly></Guard>} />
           <Route path="/" element={<Landing />} />

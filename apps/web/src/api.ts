@@ -27,6 +27,7 @@ export const post = (body: unknown): RequestInit => ({
 export interface User {
   major: string | null;
   student_number: string | null;
+  email: string | null;
   avatar: string | null;
   id: string;
   login_id: string;

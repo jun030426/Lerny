@@ -5465,3 +5465,44 @@ main.app.student-main:has(> .student-home:not(.teacher-home):not(.teacher-course
  #root :is(.quiz-criteria-toggle,.profile-card-heading button,.chat > button,.result-overview-title button,.result-question > button,.teacher-tab-heading > button,.materials-heading > button,.exam-question-pager button,.material-more .actions button,.teacher-course-tabs button) { min-height:40px; }
  #root :is(.primary,.ln-cta,.materials-add,.exam-add) { min-height:44px; }
 }
+
+/* UX review: readable actions, compact management and mobile navigation. */
+.professor-student-hub { padding-top:20px; }
+.professor-student-hub .material-hub-heading { margin:18px 0; }
+.professor-student-hub .material-hub-heading h1 { margin:8px 0; font-size:28px; }
+.professor-student-hub .material-hub-course { margin:18px 0 24px; padding:16px 20px; }
+.professor-student-hub .student-hub-roster { padding:22px 24px; }
+.professor-student-hub .student-hub-roster-tools { margin:16px 0; }
+.professor-student-hub .student-hub-roster-heading { padding-bottom:14px; }
+.teacher-course-page .teacher-review-priority { border-left:4px solid #84639d; background:#f2edf7; padding:22px; }
+.teacher-course-page .teacher-review-priority h3 { font-size:19px; color:#30263c; }
+.teacher-course-page .teacher-review-priority > div { min-height:48px; }
+.teacher-course-page .teacher-review-priority b { font-size:21px; color:#593575; }
+.teacher-course-page .teacher-analysis-toolbar button,
+.teacher-course-page .teacher-analysis-toolbar .link-button { background:#fff; border-color:#ded5e5; box-shadow:none; font-weight:500; }
+.student-home .concept-learning-row .concept-review-link { justify-self:end; color:#593575; font-size:14px; font-weight:600; padding:10px 12px; border:1px solid #cdbbdc; border-radius:8px; background:#fff; text-decoration:none; }
+.student-home .concept-review-link:hover { background:#f0e8fa; }
+.result-question { scroll-margin-top:100px; }
+.result-question:target { border-color:#9270ac; box-shadow:0 0 0 2px #ede5f5; }
+.ln-learning-experiences { max-width:1180px; margin:0 auto; padding:80px 6%; }
+.ln-learning-experiences h2 { font-size:clamp(28px,3vw,44px); line-height:1.3; letter-spacing:-.045em; margin:18px 0 32px; }
+.ln-experience-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.ln-experience-grid article { padding:32px; border:1px solid #e2d8ec; border-radius:18px; background:#fff; }
+.ln-experience-number { color:#76558e; font-size:11px; letter-spacing:.12em; }
+.ln-experience-grid h3 { font-size:23px; letter-spacing:-.035em; margin:22px 0 14px; }
+.ln-experience-grid p { color:#665b72; font-size:15px; line-height:1.85; }
+.ln-experience-grid small { display:inline-block; margin-top:16px; color:#6a5579; background:#f3edf8; padding:7px 10px; border-radius:6px; }
+@media(max-width:760px) {
+  header.lesson-header nav { display:flex; flex-wrap:wrap; gap:4px 8px; }
+  header.lesson-header nav a { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:8px 10px; font-size:14px; }
+  header.lesson-header nav button { min-height:44px; font-size:13px; padding:8px 12px; }
+  .lesson-header .lesson-exit { min-height:44px; font-size:14px; transform:none; }
+  .ln-experience-grid { grid-template-columns:1fr; }
+  .ln-learning-experiences { padding:48px 7%; }
+  .ln-experience-grid article { padding:24px; }
+  .professor-student-hub .material-hub-course { gap:12px; }
+  .student-home .concept-learning-row .concept-review-link { justify-self:start; }
+}
+.ln-page .ln-learning-experiences { max-width:1380px; margin:0 auto; }
+#root .teacher-course-page .teacher-analysis-toolbar button,
+#root .teacher-course-page .teacher-analysis-toolbar .link-button { background:#fff !important; border-color:#ded5e5 !important; box-shadow:none !important; font-weight:500; }

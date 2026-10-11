@@ -36,7 +36,16 @@ class Login(Input):
         return value
 
 
+def validate_email(value: str) -> str:
+    value = value.strip()
+    if len(value) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+", value):
+        raise ValueError("올바른 이메일 주소를 입력해 주세요.")
+    return value
+
+
 class Signup(Login):
+    email: str = Field(min_length=3, max_length=254)
+    _email = field_validator("email")(validate_email)
     major: str | None = Field(default=None, max_length=100)
     student_number: str | None = Field(default=None, max_length=40)
     password: str = Field(min_length=12, max_length=128)
@@ -63,6 +72,7 @@ def public_user(user):
             "display_name",
             "major",
             "student_number",
+            "email",
             "avatar",
             "role",
             "must_change_password",
@@ -73,13 +83,14 @@ def public_user(user):
 
 @router.post("/auth/signup", status_code=201)
 def signup(body: Signup, session: Db):
-    if body.privacy_notice_version != "2026-10-09":
+    if body.privacy_notice_version != "2026-10-12":
         deny(422, "현재 개인정보 안내에 동의해 주세요.")
     user = User(
         login_id=body.login_id,
         display_name=body.display_name,
         major=body.major or None,
         student_number=body.student_number or None,
+        email=body.email,
         password_hash=hasher.hash(body.password),
         role="student",
         privacy_notice_version=body.privacy_notice_version,
@@ -136,6 +147,15 @@ def me(user: Actor):
 
 
 class ProfileUpdate(Input):
+    email: str | None = Field(default=None, max_length=254)
+
+    @field_validator("email")
+    @classmethod
+    def email_format(cls, value):
+        if value is None:
+            raise ValueError("이메일을 입력해 주세요.")
+        return validate_email(value)
+
     major: str | None = Field(default=None, max_length=100)
     student_number: str | None = Field(default=None, max_length=40)
     avatar: str | None = Field(default=None, max_length=2800000)
@@ -143,6 +163,8 @@ class ProfileUpdate(Input):
 
 @router.patch("/me/profile")
 def update_profile(body: ProfileUpdate, session: Db, user: Actor):
+    if "email" in body.model_fields_set:
+        user.email = body.email
     if "major" in body.model_fields_set:
         user.major = body.major or None
     if "student_number" in body.model_fields_set:

@@ -41,7 +41,7 @@ async def test_signup_cannot_grant_teacher_role(app_db):
             "login_id": "newstudent",
             "password": "Test-only-password-123",
             "display_name": "학생",
-            "privacy_notice_version": "2026-10-09",
+            "email": "student@example.com", "privacy_notice_version": "2026-10-12",
         }
         assert (
             await c.post("/api/v1/auth/signup", json={**payload, "role": "teacher"})
@@ -198,10 +198,13 @@ async def test_optional_profile_and_normalized_photo(app_db):
 async def test_signup_preserves_academic_fields(app_db):
     app, _ = app_db
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as c:
-        response = await c.post("/api/v1/auth/signup", json={"login_id": "academicstudent", "password": "Test-only-password-123", "display_name": "학생", "major": "컴퓨터공학과", "student_number": "001234", "privacy_notice_version": "2026-10-09"})
+        response = await c.post("/api/v1/auth/signup", json={"login_id": "academicstudent", "password": "Test-only-password-123", "display_name": "학생", "major": "컴퓨터공학과", "student_number": "001234", "email": "student@example.com", "privacy_notice_version": "2026-10-12"})
         assert response.status_code == 201, response.text
         await login(c, "academicstudent")
         user = (await c.get("/api/v1/me")).json()
         assert user["major"] == "컴퓨터공학과"
         assert user["student_number"] == "001234"
         assert user["avatar"] is None
+        assert user["email"] == "student@example.com"
+        assert (await c.patch("/api/v1/me/profile", json={"email": "invalid"})).status_code == 422
+        assert (await c.patch("/api/v1/me/profile", json={"email": "updated@example.com"})).json()["email"] == "updated@example.com"

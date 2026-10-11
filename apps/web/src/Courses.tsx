@@ -586,6 +586,7 @@ export function StudentClass() {
         </div>
       </section>
       <Link className="classroom-exam-link" to={`/exam-prep?course=${room.course.id}`}>시험 대비 · 공개된 시험 범위와 연습문제 확인 →</Link>
+      <Link className="instructor-classroom-entry" to={`/classrooms/${sectionId}/lectures`}><span><small>MEET YOUR AI INSTRUCTOR</small><strong>개념 하나씩, AI 강사와 함께.</strong><span>주차별 강의 자료와 연결된 짧은 강의를 만나보세요.</span></span><span>AI 강의 보기 ↗</span></Link>
       <section className="classroom-actions" aria-label="강의실 학습 바로가기">
         {[
           {

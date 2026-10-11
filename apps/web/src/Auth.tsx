@@ -237,8 +237,9 @@ export function Signup() {
                   display_name: field(f, "name"),
                   major: field(f, "major"),
                   student_number: field(f, "student_number"),
+                  email: field(f, "email"),
                   password: field(f, "password"),
-                  privacy_notice_version: "2026-10-09",
+                  privacy_notice_version: "2026-10-12",
                 }),
               );
               navigate("/login");
@@ -267,6 +268,7 @@ export function Signup() {
                 required
               />
             </label>
+            <label>이메일<input name="email" type="email" autoComplete="email" maxLength={254} placeholder="name@example.com" required /></label>
             <div className="signup-academic-fields">
               <label>전공<input name="major" placeholder="예: 컴퓨터공학과" maxLength={100} required /></label>
               <label>학번<input name="student_number" placeholder="학번을 입력해 주세요" maxLength={40} autoCapitalize="none" spellCheck={false} required /></label>
@@ -304,7 +306,7 @@ export function Signup() {
                 <li>전공·학번은 계정 프로필에 저장됩니다.</li>
                 <li>개인 대화 전체는 이름과 연결해 공개하지 않아요.</li>
                 <li>
-                  학습 기록은 학기 종료 후 1년, 질문 원문은 90일 보존합니다.
+                  학기 종료 후에도 학습 기록을 열람할 수 있어요. 질문 원문은 90일 보존합니다.
                 </li>
               </ul>
             </div>
